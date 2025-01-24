@@ -8,10 +8,14 @@
 import SwiftUI
 
 @main
+
+
 struct BAC_CalculatorApp: App {
+    @StateObject private var user = User()
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(user)
         }
     }
 }
