@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct ContentView: View {
     @EnvironmentObject var user: User
 
@@ -162,10 +163,20 @@ struct ContentView: View {
             .padding()
 
         }
+        .onAppear {
+            updateBAC()
+        }
         .padding()
     }
     
-
+    func updateBAC() {
+        userBAC = calculateBAC(
+            drinks: user.Drinks,
+            bodyWeightKg: (user.measurement == "kg" ? user.weight : user.weight * 0.453592),
+            isMale: user.isMale,
+            currentTime: Date()
+        )
+    }
     
     // Helper function that converts all drinks into list into ml, based on alcohol content
     func calculateTotalAlc(drinks: [Drink]) -> Double {
@@ -251,5 +262,10 @@ extension NumberFormatter {
 
 #Preview {
     ContentView()
-        .environmentObject(User(weight: 70, measurement: "lbs", isMale: true, Drinks: []))
+        .environmentObject(User(weight: 70, measurement: "lbs", isMale: true, Drinks: [
+            Drink(volume: 12.0, alcoholContent: 5.0, timeConsumed: specificDate, measurement: "oz"),
+            Drink(volume: 24.0, alcoholContent: 5.0, timeConsumed: specificDate, measurement: "oz"),
+            Drink(volume: 16.0, alcoholContent: 7.5, timeConsumed: Date(), measurement: "oz"), // Today’s date
+            Drink(volume: 50.0, alcoholContent: 33.0, timeConsumed: Date(), measurement: "ml") // Today’s date
+        ]))
 }
